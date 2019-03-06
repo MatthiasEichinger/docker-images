@@ -85,9 +85,6 @@ This environment variable is used to provide a path to which Postgres shall
 store its database data to. This is useful if the data shall be used in 
 different containers or to provide a predefined data set to Postgres.
 
-__Note:__ In order to use this environment variable the appropriate volume must
-be enabled within the `docker-compose.yml`.
-
 ## Remote debugging Odoo
 Remote debugging Odoo or a Python application in general is done using a so 
 called PyDev server. The host runs the server and the target, i.e. Odoo 
@@ -105,7 +102,7 @@ container:
 	docker exec -t -i <container> /bin/bash
 	
 	# Example
-	docker exec -t -i odoo10.0 /bin/bash
+	docker exec -t -i odoo12.0 /bin/bash
 
 As mentioned above the Odoo docker image provides a Python script which 
 connects to a PyDev server. The only thing you need to know is the host's DNS 
@@ -124,18 +121,11 @@ Building the image is quite easy. The Dockerfile was implemented to be
 independent from the Odoo and _wkhtmltox_ version to be used. Those versions
 have default values but can be overridden using build arguments:
 
-    docker build -t brainchild/odoo:10.0 --build-arg OS_VERSION=jessie --build-arg ODOO_VERSION=10.0 --build-arg ODOO_RELEASE=latest --build-arg WKHTMLTOX_VERSION=0.12.4 .
-
-__Note:__ The following files are built into image:
-
-- entrypoint.sh
-- odoo.conf
-- test-remote-debug.py
+    docker build -t brainchild/odoo:12.0 --build-arg OS_VERSION=stretch --build-arg ODOO_VERSION=12.0 --build-arg ODOO_RELEASE=latest --build-arg WKHTMLTOX_VERSION=0.12.1.5
 
 ### OS\_VERSION
-This mandatory variable specifies the operating system version to be used. Only
-those versions can be used for which Odoo is available 
-(see: [Odoo builds page](http://nightly.odoo.com)).
+Specifies the version of Debian used as base to build the image from.
+In order to determine the versions availiable refer to [Debian Docker Images](https://hub.docker.com/_/debian).
 
 ### ODOO\_VERSION
 Specifies the version of Odoo for which to build the image. In order to 
@@ -160,14 +150,3 @@ determine the versions available refer to
 The files provided there conform to the following format:
 
     wkhtmltox-${WKHTMLTOX_VERSION}_linux-jessie-amd64.deb
-
-### Useful docker commands
-If you want to remove all docker containers perform the following command:
-
-    # Delete all containers
-    docker rm $(docker ps -a -q)
-    
-If you want to remove all docker images perform the following command:
-
-    # Delete all images
-    docker rmi $(docker images -q)
